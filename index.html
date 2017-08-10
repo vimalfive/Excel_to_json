@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>
+	Excel to JSON Demo
+</title>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+</meta>
+<meta content="utf-8" http-equiv="encoding">
+</meta>
+<script src = "xlsx.full.min.js">
+</script>
+</head>
+<body>	
+<script>
+	var EXCEL_FILE = "CCSports.xlsx";
+	var JSON_FILE = "exceltojson.json";
+	var oReq = new XMLHttpRequest();
+	oReq.open("GET", EXCEL_FILE, true);
+	oReq.responseType = "arraybuffer";
+	
+	oReq.onload = function(e) {
+		var arraybuffer = oReq.response;
+		var data = new Uint8Array(arraybuffer);
+		var arr = new Array();
+		
+		for(var i = 0; i != data.length; i++){
+			arr[i] = String.fromCharCode(data[i]);
+		}
+		var bstr = arr.join("");
+		var workbook = XLSX.read(bstr, {type:"binary"});
+		
+		for(i = 0; i < workbook.SheetNames.length; i++)	{
+			var sheet_name = workbook.SheetNames[i];
+			var worksheet = workbook.Sheets[sheet_name];
+			console.log(XLSX.utils.sheet_to_json(worksheet,{raw:true}));
+		}
+	}
+oReq.send();
+</script>
+</body>
+</html>
+
+
+
